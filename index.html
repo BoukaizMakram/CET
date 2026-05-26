@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CET Salé — Climatisation & Électrotechnique</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand:  '#1D4ED8',
+            dark:   '#0F172A',
+            yellow: '#FACC15',
+          },
+          borderRadius: { xl2: '1.25rem', xl3: '1.75rem' },
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .underline-nav { position: relative; }
+    .underline-nav::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 100%; height: 2px;
+      background: #1D4ED8;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .25s ease;
+    }
+    .underline-nav:hover::after { transform: scaleX(1); }
+    .card-hover { transition: transform .25s ease, box-shadow .25s ease; }
+    @media (hover: hover) {
+      .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,.09); }
+    }
+    #mobileMenu { transition: max-height .3s ease, opacity .3s ease; overflow: hidden; max-height: 0; opacity: 0; }
+    #mobileMenu.open { max-height: 300px; opacity: 1; }
+    .product-img-wrap { overflow: hidden; }
+    .product-img-wrap img { transition: transform .4s ease; }
+    .product-card:hover .product-img-wrap img { transform: scale(1.05); }
+  </style>
+</head>
+<body class="bg-white text-dark antialiased overflow-x-hidden">
+
+<!-- ══════════════════════════════════════
+     STICKY MOBILE CALL BAR
+══════════════════════════════════════ -->
+<div class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-gray-100 px-4 py-3 flex gap-3">
+  <a href="tel:0719791140"
+     class="flex-1 bg-brand text-white text-sm font-bold py-3.5 rounded-xl text-center active:opacity-90">
+    Appeler maintenant
+  </a>
+  <a href="mailto:CET2SALE@gmail.com"
+     class="flex-1 bg-gray-100 text-dark text-sm font-bold py-3.5 rounded-xl text-center active:opacity-90">
+    Envoyer un email
+  </a>
+</div>
+
+<!-- ══════════════════════════════════════
+     NAV
+══════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-100">
+  <div class="max-w-7xl mx-auto px-5 h-14 md:h-16 flex items-center justify-between">
+
+    <a href="#" class="flex flex-col md:absolute md:left-1/2 md:-translate-x-1/2">
+      <span class="text-lg md:text-xl font-black tracking-tight text-dark leading-none">CET<span class="text-brand">.</span>salé</span>
+      <span class="text-[8px] md:text-[9px] font-semibold tracking-[2px] uppercase text-gray-400 leading-none mt-0.5">Climatisation & Électrotechnique</span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#" class="underline-nav text-sm font-semibold text-dark">Accueil</a>
+      <a href="#produits" class="underline-nav text-sm font-medium text-gray-500 hover:text-dark transition-colors">Produits</a>
+      <a href="#apropos" class="underline-nav text-sm font-medium text-gray-500 hover:text-dark transition-colors">À propos</a>
+      <a href="#localisation" class="underline-nav text-sm font-medium text-gray-500 hover:text-dark transition-colors">Contact</a>
+    </div>
+
+    <div class="hidden md:flex items-center gap-6">
+      <a href="tel:0719791140" class="text-sm font-semibold text-gray-500 hover:text-dark transition-colors">07 19 79 11 40</a>
+      <a href="tel:0719791140" class="bg-dark text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-brand transition-colors">
+        Nous contacter
+      </a>
+    </div>
+
+    <button id="menuBtn" class="md:hidden flex flex-col gap-[5px] p-2 -mr-2" onclick="toggleMenu()">
+      <span class="block w-5 h-0.5 bg-dark rounded"></span>
+      <span class="block w-5 h-0.5 bg-dark rounded"></span>
+      <span class="block w-3 h-0.5 bg-dark rounded"></span>
+    </button>
+  </div>
+
+  <div id="mobileMenu" class="md:hidden bg-white border-t border-gray-100 px-5">
+    <div class="py-4 flex flex-col gap-1">
+      <a href="#produits" class="text-sm font-medium text-gray-700 py-2.5 border-b border-gray-50" onclick="closeMenu()">Produits</a>
+      <a href="#apropos" class="text-sm font-medium text-gray-700 py-2.5 border-b border-gray-50" onclick="closeMenu()">À propos</a>
+      <a href="#avantages" class="text-sm font-medium text-gray-700 py-2.5 border-b border-gray-50" onclick="closeMenu()">Pourquoi nous</a>
+      <a href="#localisation" class="text-sm font-medium text-gray-700 py-2.5" onclick="closeMenu()">Contact &amp; localisation</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<main class="pt-14 md:pt-16 pb-20 md:pb-0">
+  <section class="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-10">
+
+    <div id="heroCard" class="relative bg-brand rounded-2xl md:rounded-xl3 overflow-hidden px-6 md:px-16 py-10 md:py-0 md:min-h-[420px] md:flex md:items-center">
+      <div class="relative z-10 max-w-lg">
+        <p id="heroTag" class="text-blue-200 text-[10px] md:text-xs font-bold tracking-[2px] uppercase mb-4 md:mb-5">
+          Salé, Maroc — Ouvert 24h/24
+        </p>
+        <h1 id="heroTitle" class="text-white text-3xl sm:text-4xl md:text-6xl font-black leading-[1.05] tracking-tight mb-4 md:mb-6">
+          Spécialiste<br>Climatisation<br>&amp; Froid
+        </h1>
+        <p id="heroSub" class="text-blue-100 text-sm md:text-base mb-6 md:mb-8 leading-relaxed max-w-sm">
+          Matériel professionnel pour installateurs et particuliers. Stock permanent, prix compétitifs.
+        </p>
+        <div id="heroBtns" class="flex flex-col sm:flex-row gap-3">
+          <a href="#produits" class="bg-white text-brand text-sm font-bold px-6 py-3.5 rounded-xl text-center hover:bg-blue-50 transition-colors">
+            Voir les produits
+          </a>
+          <a href="#localisation" class="border border-white/30 text-white text-sm font-semibold px-6 py-3.5 rounded-xl text-center hover:bg-white/10 transition-colors">
+            Nous trouver
+          </a>
+        </div>
+      </div>
+
+      <div id="heroDeco" class="hidden md:flex absolute right-12 top-1/2 -translate-y-1/2 flex-col gap-4">
+        <div class="bg-white/10 border border-white/15 rounded-xl2 px-8 py-6 text-white text-right">
+          <p class="text-5xl font-black tracking-tight">500+</p>
+          <p class="text-blue-200 text-sm font-semibold mt-1">Références en stock</p>
+        </div>
+        <div class="bg-white/10 border border-white/15 rounded-xl2 px-8 py-6 text-white text-right">
+          <p class="text-5xl font-black tracking-tight">10+</p>
+          <p class="text-blue-200 text-sm font-semibold mt-1">Ans d'expérience</p>
+        </div>
+        <div class="bg-yellow text-dark rounded-xl2 px-8 py-4 text-right">
+          <p class="text-lg font-black tracking-tight">24h / 7j</p>
+          <p class="text-dark/60 text-xs font-semibold mt-0.5">Disponibilité permanente</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile stat strip -->
+    <div class="grid grid-cols-3 gap-3 mt-3 md:hidden">
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 text-center">
+        <p class="text-2xl font-black text-dark">500+</p>
+        <p class="text-[10px] text-gray-400 font-semibold mt-0.5 leading-snug">Références</p>
+      </div>
+      <div class="bg-brand text-white rounded-2xl p-4 text-center">
+        <p class="text-2xl font-black">24/7</p>
+        <p class="text-[10px] text-blue-200 font-semibold mt-0.5 leading-snug">Disponible</p>
+      </div>
+      <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 text-center">
+        <p class="text-2xl font-black text-dark">10+</p>
+        <p class="text-[10px] text-gray-400 font-semibold mt-0.5 leading-snug">Ans d'expérience</p>
+      </div>
+    </div>
+
+  </section>
+
+<!-- ══════════════════════════════════════
+     PRODUITS
+══════════════════════════════════════ -->
+  <section id="produits" class="max-w-7xl mx-auto px-4 md:px-6 pb-12 md:pb-16">
+
+    <!-- Mobile header -->
+    <div class="md:hidden mb-5">
+      <p class="text-[10px] font-bold tracking-[2.5px] uppercase text-gray-400 mb-1">Catalogue</p>
+      <h2 class="text-2xl font-black tracking-tight">Nos Produits</h2>
+    </div>
+
+    <!-- Desktop: label card + 4-col row -->
+    <div class="hidden md:flex gap-5 pb-2">
+      <div class="products-label bg-dark text-white rounded-xl3 p-8 flex flex-col justify-between min-w-[220px] flex-shrink-0">
+        <div>
+          <p class="text-xs font-bold tracking-[2px] uppercase text-gray-400 mb-3">Catalogue</p>
+          <h2 class="text-3xl font-black leading-tight">Nos<br>Produits</h2>
+        </div>
+        <a href="#localisation" class="mt-8 inline-block text-sm font-semibold text-gray-400 hover:text-white transition-colors">
+          Demander un devis &rarr;
+        </a>
+      </div>
+
+      <div class="grid grid-cols-4 gap-5 flex-1">
+
+        <!-- 1 — Climatiseurs -->
+        <div class="product-card card-hover bg-white border border-gray-100 rounded-xl3 overflow-hidden cursor-pointer" data-id="1">
+          <div class="product-img-wrap h-40">
+            <img src="https://images.pexels.com/photos/16848596/pexels-photo-16848596/free-photo-of-air-conditioner-unit-on-a-wall.jpeg?auto=compress&cs=tinysrgb&w=600&h=320&fit=crop"
+                 alt="Climatiseur Inverter" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <h3 class="font-bold text-dark text-sm leading-snug mb-1">Climatiseurs Inverter</h3>
+            <p class="text-xs text-gray-400 mb-4">9 000 — 24 000 BTU</p>
+            <a href="tel:0719791140" class="text-xs font-bold text-brand hover:underline">Demander le prix</a>
+          </div>
+        </div>
+
+        <!-- 2 — Gaz -->
+        <div class="product-card card-hover bg-white border border-gray-100 rounded-xl3 overflow-hidden cursor-pointer" data-id="2">
+          <div class="product-img-wrap h-40">
+            <img src="https://images.pexels.com/photos/29848733/pexels-photo-29848733/free-photo-of-rows-of-rusty-gas-cylinders-in-nepal.jpeg?auto=compress&cs=tinysrgb&w=600&h=320&fit=crop"
+                 alt="Gaz Réfrigérant R410A" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <h3 class="font-bold text-dark text-sm leading-snug mb-1">Gaz R410A — Forane</h3>
+            <p class="text-xs text-gray-400 mb-4">R22 · R32 · R404A</p>
+            <a href="tel:0719791140" class="text-xs font-bold text-brand hover:underline">Demander le prix</a>
+          </div>
+        </div>
+
+        <!-- 3 — Moteurs -->
+        <div class="product-card card-hover bg-white border border-gray-100 rounded-xl3 overflow-hidden cursor-pointer" data-id="3">
+          <div class="product-img-wrap h-40">
+            <img src="https://images.pexels.com/photos/3861953/pexels-photo-3861953.jpeg?auto=compress&cs=tinysrgb&w=600&h=320&fit=crop"
+                 alt="Moteur Universel" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <h3 class="font-bold text-dark text-sm leading-snug mb-1">Moteurs Universels</h3>
+            <p class="text-xs text-gray-400 mb-4">Toutes marques</p>
+            <a href="tel:0719791140" class="text-xs font-bold text-brand hover:underline">Demander le prix</a>
+          </div>
+        </div>
+
+        <!-- 4 — Manomètres -->
+        <div class="product-card card-hover bg-white border border-gray-100 rounded-xl3 overflow-hidden cursor-pointer" data-id="4">
+          <div class="product-img-wrap h-40">
+            <img src="https://images.pexels.com/photos/6471911/pexels-photo-6471911.jpeg?auto=compress&cs=tinysrgb&w=600&h=320&fit=crop"
+                 alt="Manomètres HVAC" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-5">
+            <h3 class="font-bold text-dark text-sm leading-snug mb-1">Manomètres &amp; Stations</h3>
+            <p class="text-xs text-gray-400 mb-4">2 voies · 4 voies</p>
+            <a href="tel:0719791140" class="text-xs font-bold text-brand hover:underline">Demander le prix</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile 2-col grid (all 8) + Desktop second row (last 4) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 md:mt-5">
+
+      <!-- Mobile-only duplicates of first 4 -->
+      <div class="product-card md:hidden card-hover bg-white border border-gray-100 rounded-2xl overflow-hidden cursor-pointer" data-id="1">
+        <div class="product-img-wrap h-28">
+          <img src="https://images.pexels.com/photos/16848596/pexels-photo-16848596/free-photo-of-air-conditioner-unit-on-a-wall.jpeg?auto=compress&cs=tinysrgb&w=400&h=224&fit=crop"
+               alt="Climatiseur" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-dark text-xs leading-snug mb-1">Climatiseurs Inverter</h3>
+          <p class="text-[10px] text-gray-400 mb-3">9 000 — 24 000 BTU</p>
+          <a href="tel:0719791140" class="text-[10px] font-bold text-brand">Demander le prix</a>
+        </div>
+      </div>
+
+      <div class="product-card md:hidden card-hover bg-white border border-gray-100 rounded-2xl overflow-hidden cursor-pointer" data-id="2">
+        <div class="product-img-wrap h-28">
+          <img src="https://images.pexels.com/photos/29848733/pexels-photo-29848733/free-photo-of-rows-of-rusty-gas-cylinders-in-nepal.jpeg?auto=compress&cs=tinysrgb&w=400&h=224&fit=crop"
+               alt="Gaz Réfrigérant" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-dark text-xs leading-snug mb-1">Gaz R410A — Forane</h3>
+          <p class="text-[10px] text-gray-400 mb-3">R22 · R32 · R404A</p>
+          <a href="tel:0719791140" class="text-[10px] font-bold text-brand">Demander le prix</a>
+        </div>
+      </div>
+
+      <div class="product-card md:hidden card-hover bg-white border border-gray-100 rounded-2xl overflow-hidden cursor-pointer" data-id="3">
+        <div class="product-img-wrap h-28">
+          <img src="https://images.pexels.com/photos/3861953/pexels-photo-3861953.jpeg?auto=compress&cs=tinysrgb&w=400&h=224&fit=crop"
+               alt="Moteur" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-dark text-xs leading-snug mb-1">Moteurs Universels</h3>
+          <p class="text-[10px] text-gray-400 mb-3">Toutes marques</p>
+          <a href="tel:0719791140" class="text-[10px] font-bold text-brand">Demander le prix</a>
+        </div>
+      </div>
+
+      <div class="product-card md:hidden card-hover bg-white border border-gray-100 rounded-2xl overflow-hidden cursor-pointer" data-id="4">
+        <div class="product-img-wrap h-28">
+          <img src="https://images.pexels.com/photos/6471911/pexels-photo-6471911.jpeg?auto=compress&cs=tinysrgb&w=400&h=224&fit=crop"
+               alt="Manomètres" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-dark text-xs leading-snug mb-1">Manomètres</h3>
+          <p class="text-[10px] text-gray-400 mb-3">2 voies · 4 voies</p>
+          <a href="tel:0719791140" class="text-[10px] font-bold text-brand">Demander le prix</a>
+        </div>
+      </div>
+
+      <!-- Shared second row — visible on both -->
+
+      <!-- 5 — Tubes cuivre -->
+      <div class="product-card card-hover bg-white border border-gray-100 rounded-2xl md:rounded-xl3 overflow-hidden cursor-pointer" data-id="5">
+        <div class="product-img-wrap h-28 md:h-36">
+          <img src="https://images.pexels.com/photos/28169591/pexels-photo-28169591/free-photo-of-copper-pluming-fitting.jpeg?auto=compress&cs=tinysrgb&w=600&h=288&fit=crop"
+               alt="Tubes en Cuivre" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4 md:p-5">
+          <h3 class="font-bold text-dark text-xs md:text-sm leading-snug mb-1">Tubes en Cuivre</h3>
+          <p class="text-[10px] md:text-xs text-gray-400 mb-3 md:mb-4">Tous diamètres</p>
+          <a href="tel:0719791140" class="text-[10px] md:text-xs font-bold text-brand hover:underline">Demander le prix</a>
+        </div>
+      </div>
+
+      <!-- 6 — Gaines -->
+      <div class="product-card card-hover bg-white border border-gray-100 rounded-2xl md:rounded-xl3 overflow-hidden cursor-pointer" data-id="6">
+        <div class="product-img-wrap h-28 md:h-36">
+          <img src="https://images.pexels.com/photos/1000753/pexels-photo-1000753.jpeg?auto=compress&cs=tinysrgb&w=600&h=288&fit=crop"
+               alt="Gaines et Conduits" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4 md:p-5">
+          <h3 class="font-bold text-dark text-xs md:text-sm leading-snug mb-1">Gaines &amp; Conduits</h3>
+          <p class="text-[10px] md:text-xs text-gray-400 mb-3 md:mb-4">Flexibles alu, rigides</p>
+          <a href="tel:0719791140" class="text-[10px] md:text-xs font-bold text-brand hover:underline">Demander le prix</a>
+        </div>
+      </div>
+
+      <!-- 7 — Thermostats -->
+      <div class="product-card card-hover bg-white border border-gray-100 rounded-2xl md:rounded-xl3 overflow-hidden cursor-pointer" data-id="7">
+        <div class="product-img-wrap h-28 md:h-36">
+          <img src="https://images.pexels.com/photos/7616651/pexels-photo-7616651.jpeg?auto=compress&cs=tinysrgb&w=600&h=288&fit=crop"
+               alt="Thermostat Zoning" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4 md:p-5">
+          <h3 class="font-bold text-dark text-xs md:text-sm leading-snug mb-1">Thermostats &amp; Zoning</h3>
+          <p class="text-[10px] md:text-xs text-gray-400 mb-3 md:mb-4">Systèmes intelligents</p>
+          <a href="tel:0719791140" class="text-[10px] md:text-xs font-bold text-brand hover:underline">Demander le prix</a>
+        </div>
+      </div>
+
+      <!-- 8 — Accessoires -->
+      <div class="product-card card-hover bg-white border border-gray-100 rounded-2xl md:rounded-xl3 overflow-hidden cursor-pointer" data-id="8">
+        <div class="product-img-wrap h-28 md:h-36">
+          <img src="https://images.pexels.com/photos/7568430/pexels-photo-7568430.jpeg?auto=compress&cs=tinysrgb&w=600&h=288&fit=crop"
+               alt="Accessoires HVAC" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-4 md:p-5">
+          <h3 class="font-bold text-dark text-xs md:text-sm leading-snug mb-1">Accessoires Divers</h3>
+          <p class="text-[10px] md:text-xs text-gray-400 mb-3 md:mb-4">Fixations, câbles…</p>
+          <a href="tel:0719791140" class="text-[10px] md:text-xs font-bold text-brand hover:underline">Demander le prix</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+<!-- ══════════════════════════════════════
+     ABOUT
+══════════════════════════════════════ -->
+  <section id="apropos" class="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16 border-t border-gray-100">
+    <div class="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+
+      <div class="about-left">
+        <p class="text-[10px] md:text-xs font-bold tracking-[2.5px] uppercase text-gray-400 mb-4">À propos de CET Salé</p>
+        <h2 class="text-3xl md:text-5xl font-black leading-[1.1] tracking-tight mb-5">
+          Votre partenaire<br>climatisation<br>à Salé
+        </h2>
+        <p class="text-gray-500 text-sm md:text-base leading-relaxed mb-6 max-w-md">
+          Depuis plus de 10 ans, CET Salé accompagne professionnels et particuliers avec une gamme complète de matériel de climatisation, réfrigération et électrotechnique. Qualité irréprochable, stock permanent, prix justes.
+        </p>
+        <a href="tel:0719791140" class="inline-block bg-dark text-white text-sm font-bold px-7 py-3.5 rounded-xl hover:bg-brand transition-colors">
+          07 19 79 11 40
+        </a>
+      </div>
+
+      <div class="about-right grid grid-cols-2 gap-3 md:gap-4">
+        <div class="about-stat bg-dark text-white rounded-2xl md:rounded-xl3 p-5 md:p-8 col-span-2">
+          <p class="text-4xl md:text-6xl font-black tracking-tight mb-1 md:mb-2">24h / 7j</p>
+          <p class="text-gray-400 text-xs md:text-sm font-medium">Disponibilité permanente, toute l'année, sans exception.</p>
+        </div>
+        <div class="about-stat bg-gray-50 border border-gray-100 rounded-2xl md:rounded-xl3 p-5 md:p-7">
+          <p class="text-3xl md:text-4xl font-black tracking-tight text-dark mb-1">500+</p>
+          <p class="text-gray-400 text-[10px] md:text-xs font-medium leading-snug">Références en stock immédiat</p>
+        </div>
+        <div class="about-stat bg-brand text-white rounded-2xl md:rounded-xl3 p-5 md:p-7">
+          <p class="text-3xl md:text-4xl font-black tracking-tight mb-1">10+</p>
+          <p class="text-blue-200 text-[10px] md:text-xs font-medium leading-snug">Années d'expertise</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+<!-- ══════════════════════════════════════
+     WHY US
+══════════════════════════════════════ -->
+  <section id="avantages" class="bg-gray-50 border-y border-gray-100 py-10 md:py-16">
+    <div class="max-w-7xl mx-auto px-4 md:px-6">
+      <div class="flex items-end justify-between mb-8 md:mb-12">
+        <div>
+          <p class="text-[10px] md:text-xs font-bold tracking-[2.5px] uppercase text-gray-400 mb-2 md:mb-3">Nos avantages</p>
+          <h2 class="text-2xl md:text-4xl font-black tracking-tight">Pourquoi nous choisir</h2>
+        </div>
+        <a href="#localisation" class="hidden md:block text-sm font-semibold text-gray-400 hover:text-dark transition-colors">
+          Nous contacter &rarr;
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+        <div class="why-card bg-white border border-gray-100 rounded-2xl md:rounded-xl3 p-6 md:p-8 card-hover">
+          <p class="text-xs font-black text-brand tracking-widest uppercase mb-3 md:mb-4">01</p>
+          <h3 class="text-base md:text-xl font-black mb-2 md:mb-3 leading-snug">Stock permanent</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Plus de 500 références toujours disponibles. Fini les délais — votre matériel est prêt à emporter.</p>
+        </div>
+        <div class="why-card bg-white border border-gray-100 rounded-2xl md:rounded-xl3 p-6 md:p-8 card-hover">
+          <p class="text-xs font-black text-brand tracking-widest uppercase mb-3 md:mb-4">02</p>
+          <h3 class="text-base md:text-xl font-black mb-2 md:mb-3 leading-snug">Prix compétitifs</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Partenariats directs avec les fournisseurs. Les meilleurs tarifs du marché, pour tous.</p>
+        </div>
+        <div class="why-card bg-white border border-gray-100 rounded-2xl md:rounded-xl3 p-6 md:p-8 card-hover">
+          <p class="text-xs font-black text-brand tracking-widest uppercase mb-3 md:mb-4">03</p>
+          <h3 class="text-base md:text-xl font-black mb-2 md:mb-3 leading-snug">Conseil expert</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Notre équipe qualifiée vous guide dans vos choix techniques gratuitement, à toute heure.</p>
+        </div>
+        <div class="why-card bg-white border border-gray-100 rounded-2xl md:rounded-xl3 p-6 md:p-8 card-hover">
+          <p class="text-xs font-black text-brand tracking-widest uppercase mb-3 md:mb-4">04</p>
+          <h3 class="text-base md:text-xl font-black mb-2 md:mb-3 leading-snug">Produits certifiés</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Tous nos produits sont d'origine certifiée, conformes aux normes et garantis fabricant.</p>
+        </div>
+        <div class="why-card bg-white border border-gray-100 rounded-2xl md:rounded-xl3 p-6 md:p-8 card-hover">
+          <p class="text-xs font-black text-brand tracking-widest uppercase mb-3 md:mb-4">05</p>
+          <h3 class="text-base md:text-xl font-black mb-2 md:mb-3 leading-snug">Toutes marques</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Samsung, Daikin, Gree, Mitsubishi… Pièces détachées pour toutes les unités du marché.</p>
+        </div>
+        <div class="why-card bg-dark text-white rounded-2xl md:rounded-xl3 p-6 md:p-8 card-hover">
+          <p class="text-xs font-black text-gray-500 tracking-widest uppercase mb-3 md:mb-4">06</p>
+          <h3 class="text-base md:text-xl font-black mb-2 md:mb-3 leading-snug">Service pro</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Conditions professionnelles pour installateurs et entreprises. Contactez-nous pour un partenariat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- ══════════════════════════════════════
+     MAP / CONTACT
+══════════════════════════════════════ -->
+  <section id="localisation" class="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16">
+    <div class="mb-7 md:mb-12">
+      <p class="text-[10px] md:text-xs font-bold tracking-[2.5px] uppercase text-gray-400 mb-2 md:mb-3">Où nous trouver</p>
+      <h2 class="text-2xl md:text-4xl font-black tracking-tight">Notre magasin à Salé</h2>
+    </div>
+
+    <div class="grid md:grid-cols-5 gap-4 md:gap-6 items-start">
+
+      <div class="md:col-span-2 flex flex-col gap-3 md:gap-4">
+
+        <div class="bg-brand text-white rounded-2xl md:rounded-xl3 p-6 md:p-8">
+          <p class="text-[10px] md:text-xs font-bold tracking-[2px] uppercase text-blue-300 mb-5">Nous contacter</p>
+          <div class="space-y-4">
+            <div>
+              <p class="text-[10px] text-blue-300 font-semibold uppercase tracking-widest mb-1">Téléphone</p>
+              <a href="tel:0719791140" class="text-xl md:text-2xl font-black hover:text-blue-200 transition-colors">07 19 79 11 40</a>
+            </div>
+            <div>
+              <p class="text-[10px] text-blue-300 font-semibold uppercase tracking-widest mb-1">Email</p>
+              <a href="mailto:CET2SALE@gmail.com" class="text-sm md:text-base font-semibold hover:text-blue-200 transition-colors break-all">CET2SALE@gmail.com</a>
+            </div>
+            <div>
+              <p class="text-[10px] text-blue-300 font-semibold uppercase tracking-widest mb-1">Adresse</p>
+              <p class="text-sm md:text-base font-semibold leading-snug">Av. Dar, Av. Mohamed Addou<br>Hay Inbiaa, Salé, Maroc</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 border border-gray-100 rounded-2xl md:rounded-xl3 p-5 md:p-7">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span>
+            <span class="text-[10px] font-bold text-green-600 uppercase tracking-widest">Ouvert maintenant</span>
+          </div>
+          <p class="text-2xl md:text-3xl font-black text-dark mb-1">24h / 7j</p>
+          <p class="text-xs md:text-sm text-gray-400">Lundi au dimanche, jours fériés inclus</p>
+        </div>
+
+        <a href="https://maps.app.goo.gl/UoHcEbkkmDrDa63q7" target="_blank" rel="noopener"
+           class="block bg-dark text-white text-center text-sm font-bold py-4 rounded-xl hover:bg-brand transition-colors">
+          Ouvrir dans Google Maps
+        </a>
+
+      </div>
+
+      <!-- Map — exact CET coordinates -->
+      <div class="md:col-span-3 rounded-2xl md:rounded-xl3 overflow-hidden border border-gray-100 h-56 sm:h-72 md:h-[480px]">
+        <iframe
+          src="https://maps.google.com/maps?q=34.0469375,-6.7772031&z=17&output=embed"
+          class="w-full h-full border-0"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="CET Salé — Localisation">
+        </iframe>
+      </div>
+
+    </div>
+  </section>
+
+<!-- ══════════════════════════════════════
+     CTA BAND
+══════════════════════════════════════ -->
+  <section class="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16">
+    <div class="bg-dark rounded-2xl md:rounded-xl3 px-6 md:px-10 py-10 md:py-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
+      <div>
+        <h2 class="text-2xl md:text-4xl font-black text-white leading-tight tracking-tight mb-2 md:mb-3">
+          Besoin d'un devis<br>ou d'un conseil ?
+        </h2>
+        <p class="text-gray-400 text-sm max-w-md">Notre équipe est disponible 24h/24 pour répondre à toutes vos questions.</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-shrink-0">
+        <a href="tel:0719791140"
+           class="bg-white text-dark text-sm font-bold px-7 py-4 rounded-xl hover:bg-blue-50 transition-colors text-center">
+          Appeler maintenant
+        </a>
+        <a href="mailto:CET2SALE@gmail.com"
+           class="border border-white/20 text-white text-sm font-semibold px-7 py-4 rounded-xl hover:bg-white/10 transition-colors text-center">
+          Envoyer un email
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer class="border-t border-gray-100 bg-white mb-16 md:mb-0">
+  <div class="max-w-7xl mx-auto px-5 md:px-6 py-10 md:py-12">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 pb-8 md:pb-10 border-b border-gray-100">
+
+      <div class="col-span-2">
+        <p class="text-lg md:text-xl font-black tracking-tight text-dark mb-0.5">CET<span class="text-brand">.</span>salé</p>
+        <p class="text-[9px] md:text-[10px] font-bold tracking-[2.5px] uppercase text-gray-300 mb-3">Climatisation & Électrotechnique</p>
+        <p class="text-xs md:text-sm text-gray-400 leading-relaxed max-w-sm">
+          Votre spécialiste en climatisation, réfrigération et électrotechnique à Salé. Matériel professionnel, service permanent.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-[10px] font-bold tracking-[2px] uppercase text-gray-300 mb-4">Produits</p>
+        <ul class="space-y-2.5">
+          <li><a href="#produits" class="text-xs md:text-sm text-gray-500 hover:text-dark transition-colors">Climatiseurs Inverter</a></li>
+          <li><a href="#produits" class="text-xs md:text-sm text-gray-500 hover:text-dark transition-colors">Gaz Réfrigérants</a></li>
+          <li><a href="#produits" class="text-xs md:text-sm text-gray-500 hover:text-dark transition-colors">Moteurs &amp; Pièces</a></li>
+          <li><a href="#produits" class="text-xs md:text-sm text-gray-500 hover:text-dark transition-colors">Outillage Pro</a></li>
+          <li><a href="#produits" class="text-xs md:text-sm text-gray-500 hover:text-dark transition-colors">Accessoires</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-[10px] font-bold tracking-[2px] uppercase text-gray-300 mb-4">Contact</p>
+        <ul class="space-y-2.5">
+          <li><a href="tel:0719791140" class="text-xs md:text-sm text-gray-500 hover:text-dark transition-colors">07 19 79 11 40</a></li>
+          <li><a href="mailto:CET2SALE@gmail.com" class="text-xs md:text-sm text-gray-500 hover:text-dark transition-colors break-all">CET2SALE@gmail.com</a></li>
+          <li><a href="#localisation" class="text-xs md:text-sm text-gray-500 hover:text-dark transition-colors">Av. Mohamed Addou, Salé</a></li>
+          <li><span class="text-xs md:text-sm text-gray-500">Ouvert 24h/24 — 7j/7</span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 pt-6 text-[10px] md:text-xs text-gray-300">
+      <p>© 2025 CET Salé. Tous droits réservés.</p>
+      <p>Salé, Maroc — Hay Inbiaa, Abderrahman Bouzidna</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════
+     GSAP
+══════════════════════════════════════ -->
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.timeline({ defaults: { ease: 'power3.out' } })
+    .from('#heroCard',  { opacity: 0, y: 24, duration: .8, delay: .05 })
+    .from('#heroTag',   { opacity: 0, y: 12, duration: .5 }, '-=.45')
+    .from('#heroTitle', { opacity: 0, y: 20, duration: .6 }, '-=.4')
+    .from('#heroSub',   { opacity: 0, y: 14, duration: .5 }, '-=.35')
+    .from('#heroBtns',  { opacity: 0, y: 10, duration: .45 }, '-=.3')
+    .from('#heroDeco',  { opacity: 0, x: 24, duration: .6 }, '-=.45');
+
+  const fadeUp = (sel, trigger, stagger = 0) => gsap.from(sel, {
+    scrollTrigger: { trigger: trigger || sel, start: 'top 85%' },
+    opacity: 0, y: 24, duration: .55, stagger, ease: 'power3.out'
+  });
+
+  fadeUp('.products-label', '#produits');
+  fadeUp('.product-card', '#produits', .06);
+  fadeUp('.about-left', '#apropos');
+  fadeUp('.about-stat', '#apropos', .09);
+  fadeUp('.why-card', '#avantages', .06);
+  fadeUp('#localisation .grid > *', '#localisation', .1);
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').style.boxShadow =
+      window.scrollY > 30 ? '0 1px 16px rgba(0,0,0,.06)' : 'none';
+  }, { passive: true });
+
+  // Product card navigation
+  document.querySelectorAll('.product-card[data-id]').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('a')) return; // let "Demander le prix" tel: links still work
+      window.location.href = `product.html?id=${card.dataset.id}`;
+    });
+  });
+
+  function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+  function closeMenu()  { document.getElementById('mobileMenu').classList.remove('open'); }
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id === '#') return;
+      const el = document.querySelector(id);
+      if (el) {
+        e.preventDefault();
+        window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 72, behavior: 'smooth' });
+        closeMenu();
+      }
+    });
+  });
+</script>
+</body>
+</html>
